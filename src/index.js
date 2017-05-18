@@ -1,137 +1,133 @@
-/* ДЗ 3 - работа с массивами и объеектами */
+/* ДЗ 4 - работа с DOM */
 
-/*
- Задача 1:
- Напишите аналог встроенного метода forEach для работы с массивами
+/**
+ * Функция должна создать элемент с тегом DIV, поместить в него текстовый узел и вернуть получившийся элемент
+ *
+ * @param {string} text - текст, который необходимо поместить в div
+ * @return {Element}
  */
-function forEach(array, fn) {
-	for(var i = 0; i<array.length; i++){
-		fn(array[i],i,array);
-	}
+function createDivWithText(text) {
+    var d = document.createElement('div');
+    d.innerHTML = text;
+    return d
 }
 
-/*
- Задача 2:
- Напишите аналог встроенного метода map для работы с массивами
+/**
+ * Функция должна создать элемент с тегом A, установить значение для атрибута href и вернуть получившийся элемент
+ *
+ * @param {string} hrefValue - значение для атрибута href
+ * @return {Element}
  */
-function map(array, fn) {
-	var mapArr =[];
-	for(var i = 0; i<array.length;i++){
-		mapArr.push(fn(array[i],i,array));
-	}
-	return mapArr
+function createAWithHref(hrefValue) {
+    var a = document.createElement('a');
+    a.setAttribute('href',hrefValue);
+    return a
 }
 
-/*
- Задача 3:
- Напишите аналог встроенного метода reduce для работы с массивами
+/**
+ * Функция должна вставлять элемент what в начало элемента where
+ *
+ * @param {Element} what - что вставлять
+ * @param {Element} where - куда вставлять
  */
-function reduce(array, fn, initial) {
-	var res = initial || array[0],
-		count = initial ? 0: 1;
-	for(var i = count; i<array.length; i++){	
-		res = fn(res,array[i],i,array)
-	}
-	return res;
+function prepend(what, where) {
+    where.insertBefore(what,where.firstChild);
 }
 
-/*
- Задача 4:
- Функция принимает объект и имя свойства, которое необходиом удалить из объекта
- Функция должна удалить указанное свойство из указанного объекта
+/**
+ * Функция должна перебрать все дочерние элементы элемента where
+ * и вернуть массив, состоящий из тех дочерних элементов
+ * следующим соседом которых является элемент с тегом P
+ * Рекурсия - по желанию
+ *
+ * @param {Element} where - где искать
+ * @return {Array<Element>}
+ *
+ * @example
+ * для html '<div></div><p></p><a></a><span></span><p></p>'
+ * функция должна вернуть: [div, span]
+ * т.к. следующим соседом этих элементов является элемент с тегом P
  */
-function deleteProperty(obj, prop) {
-	delete obj[prop];
+function findAllPSiblings(where) {
+    var arr = [];
+    for(var i = 0; i<where.children.length -1;i++){
+        if(where.children[i].nextElementSibling.tagName === 'P') {
+            arr.push(where.children[i]);
+        }
+    }
+    return arr
 }
 
-/*
- Задача 5:
- Функция принимает объект и имя свойства и возвращает true или false
- Функция должна проверить существует ли укзаанное свойство в указанном объекте
+/**
+ * Функция должна перебрать все дочерние узлы типа "элемент" внутри where
+ * и вернуть массив, состоящий из текстового содержимого перебираемых элементов
+ * Но похоже, что в код закралась ошибка, которую нужно найти и исправить
+ *
+ * @param {Element} where - где искать
+ * @return {Array<string>}
  */
-function hasProperty(obj, prop) {
-	return prop in obj
+function findError(where) {
+    var result = [];
+
+    for (var i = 0; i < where.children.length; i++) {
+        result.push(where.children[i].innerText);
+    }
+
+    return result;
 }
 
-/*
- Задача 6:
- Функция должна получить все перечисляемые свойства объекта и вернуть их в виде массива
+/**
+ * Функция должна перебрать все дочерние узлы элемента where
+ * и удалить из него все текстовые узлы
+ * Без рекурсии!
+ * Будьте внимательны при удалении узлов,
+ * можно получить неожиданное поведение при переборе узлов
+ *
+ * @param {Element} where - где искать
+ *
+ * @example
+ * после выполнения функции, дерево <div></div>привет<p></p>loftchool!!!
+ * должно быть преобразовано в <div></div><p></p>
  */
-function getEnumProps(obj) {
-	var arr = [];
-	for(var key in obj){
-		arr.push(key)
-	}
-	return arr
+function deleteTextNodes(where) {
+    for(var i = 0; i<where.childNodes.length;i++){
+        if(where.childNodes[i].nodeType == 3){
+            where.removeChild(where.childNodes[i])
+        }
+    }
+    return where
 }
 
-/*
- Задача 7:
- Функция должна перебрать все свойства объекта, преобразовать их имена в верхний регистра и вернуть в виде массива
+/**
+ * Выполнить предудыщее задание с использование рекурсии
+ * то есть необходимо заходить внутрь каждого дочернего элемента
+ *
+ * @param {Element} where - где искать
+ *
+ * @example
+ * после выполнения функции, дерево <span> <div> <b>привет</b> </div> <p>loftchool</p> !!!</span>
+ * должно быть преобразовано в <span><div><b></b></div><p></p></span>
  */
-function upperProps(obj) {
-		var arr = [];
-	for(var key in obj){
-		arr.push(key.toUpperCase())
-	}
-	return arr
+function deleteTextNodesRecursive(where) {
+    for(var i = 0; i<where.childNodes.length; i++){
+        if(where.childNodes[i].nodeType == 1){
+            deleteTextNodesRecursive(where.childNodes[i]);
+        }else if(where.childNodes[i].nodeType == 3){
+       where.removeChild(where.childNodes[i]);
+       i--;
+       }
+    }
+    return where    
 }
 
-/*
- Задача 8 *:
- Напишите аналог встроенного метода slice для работы с массивами
- */
-function slice(array, from, to) {
-	var arr = [];
-	if(to >= 0){
-		if(to >array.length) to = array.length;
-		else to = to
-	}else if(to < 0){
-		to = array.length + to;
-	}else if(typeof to == 'undefined'){
-		to = array.length
-	}
-	if(from>=0){
-		from = from;
-	}else if(from<0){
-		if(Math.abs(from)>array.length){
-			from = 0
-		}else{
-			from = array.length + from;			
-		}
-	}else if(typeof from == 'undefined'){
-		from = 0
-	}
 
-	for(var i = from; i<to; i++){
-		arr.push(array[i]);
-	}
-	return arr;
-}
-
-/*
- Задача 9 *:
- Функция принимает объект и должна вернуть Proxy для этого объекта
- Proxy должен перехватывать все попытки записи значений свойств и возводить это значение в квадрат
- */
-function createProxy(obj) {
-	var prox = new Proxy(obj,{
-		set(target,prop,value){
-			target[prop] = value*value;
-			return true 
-		}
-	})
-	return prox
-}
 
 export {
-    forEach,
-    map,
-    reduce,
-    deleteProperty,
-    hasProperty,
-    getEnumProps,
-    upperProps,
-    slice,
-    createProxy
+    createDivWithText,
+    createAWithHref,
+    prepend,
+    findAllPSiblings,
+    findError,
+    deleteTextNodes,
+    deleteTextNodesRecursive
 };
