@@ -106,7 +106,7 @@ function deleteTextNodes(where) {
  *
  * @example
  * после выполнения функции, дерево <span> <div> <b>привет</b> </div> <p>loftchool</p> !!!</span>
- * должно быть преобразовано в <span><div><b></b></div><p></p></span>
+ * должно быть преобразовано в <span><div><b></b></div><p></p></span> 
  */
 function deleteTextNodesRecursive(where) {
     for(var i = 0; i<where.childNodes.length; i++){
