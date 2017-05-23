@@ -20,9 +20,23 @@ let homeworkContainer = document.querySelector('#homework-container');
  * Функция должна только создавать элемент и задвать ему случайные размер/позицию/цвет
  * Функция НЕ должна добавлять элемент на страницу
  *
- * @return {Element}
+ * @return {Element}	
  */
 function createDiv() {
+	let div = document.createElement('div'),
+		color = '#',
+    	letters = '0123456789ABCDEF'.split(''); 
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.round(Math.random() * 15)];
+    }
+
+	div.classList.add('draggable-div');
+	div.style.width =  Math.random()*100 +'px';
+	div.style.height =  Math.random()*100 +'px';
+	div.style.top =  Math.random()*100 +'px';
+	div.style.left =  Math.random()*100 +'px';
+	div.style.background = color;
+	return div;
 }
 
 /**
