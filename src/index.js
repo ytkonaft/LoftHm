@@ -9,7 +9,7 @@
  * @return {Window}
  */
 function createWindow(name, width, height) {                       
-	window.open('',name, `width=${width}, height=${height}`);      
+	return window.open('',name, `width=${width}, height=${height}`);      
 }                                                                  
 
 /**
@@ -18,7 +18,7 @@ function createWindow(name, width, height) {
  * @param {Window} window - окно, размер которого надо изменить
  */
 function closeWindow(window) {
-	window.close();
+	return window.close();
 }
 
 /**
@@ -37,9 +37,8 @@ function createCookie(name, value) {
  * @param name - имя
  */
 function deleteCookie(name) {
-	setCookie(name, "", {
-		expires: -1
-	})
+	var date = new Date(0);
+	return document.cookie =  name +"=;  expires=" + date.toUTCString();
 }
 
 export {
